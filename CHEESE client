@@ -1,0 +1,105 @@
+// ==UserScript==
+// @name         cheese client
+// @namespace    http://tampermonkey.net/
+// @version      3.1
+// @description  yes
+// @author       WOB
+// @match        https://starblast.io/
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    const themeCSS = `
+        /* 1. CURSOR */
+        html, body, #ui, canvas {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" style="font-size: 24px;"><text y="20">🧀</text></svg>'), auto !important;
+        }
+
+        /* CHEESE UI */
+        * {
+            border: none !important;
+            outline: none !important;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.9) !important;
+            box-shadow: none !important;
+        }
+
+        .inputwrapper, .stats, #player button, .modal, .followtools a,
+        .stats input, .ecpinput, .donate-btn, .gameloaderwrapper,
+        #respawn, #connection_lost, #game_over, .pricechoice span,
+        .modal .mod, .modal .modecp, .modal .modalbody .gmodes span,
+        #home, #home_mobile, .bottom-left > *, .bottom-right > *,
+        .modalbody, .ecp-modal, .frozenbg, .customtable, .title,
+        .modalheader, .modal-dialog, .modal-content, .modal-container,
+        #continue_btn, #respawn_btn, #refresh_btn {
+            background: rgba(15, 10, 0, 0.9) !important;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4), inset 0 0 10px rgba(255, 204, 0, 0.1) !important;
+            border-radius: 8px !important;
+        }
+
+        /* 3. FIXING THE DAMM BUTTONS */
+        .sbg, .sbg-info, .sbg-gears, .sbg-facebook, .sbg-twitter, .sbg-diamond {
+            color: #FFCC00 !important;
+            -webkit-text-fill-color: #FFCC00 !important;
+            filter: sepia(100%) saturate(1000%) hue-rotate(0deg) brightness(100%) !important;
+            opacity: 1 !important;
+            font-family: sbglyphs !important;
+        }
+
+        /* YELLOW TEXT */
+        * {
+            color: #FFCC00 !important;
+            -webkit-text-fill-color: #FFCC00 !important;
+        }
+
+        :not(.sbglyphs):not(i):not(.fa):not(.fas) {
+            font-family: 'Arial Black', sans-serif !important;
+        }
+
+        /* 5. LOGO THINGY */
+        #logo, .logo, .S_logo, .donate { display: none !important; }
+        .cheese-logo-custom {
+            font-family: 'Arial Black', sans-serif; font-size: 85px; color: #FFCC00;
+            text-align: center; margin-top: 65px; letter-spacing: -2px; z-index: 9999;
+            pointer-events: none; user-select: none; text-transform: uppercase;
+            display: inline-block; width: 100%; text-shadow: 0 0 30px #FF9900;
+        }
+
+        canvas {
+            filter: saturate(180%) brightness(1.05) !important;
+        }
+    `;
+
+    function setFavicon() {
+        let link = document.querySelector("link[rel*='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'shortcut icon';
+            document.head.appendChild(link);
+        }
+        link.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧀</text></svg>';
+    }
+
+    function injectCheese() {
+        let s = document.getElementById('cheese-final-v31');
+        if (!s) {
+            s = document.createElement('style');
+            s.id = 'cheese-final-v31';
+            document.head.appendChild(s);
+        }
+        s.textContent = themeCSS;
+
+        const l = document.querySelector('#logo') || document.querySelector('.logo');
+        if (l && !document.querySelector('.cheese-logo-custom')) {
+            const nl = document.createElement('div');
+            nl.className = 'cheese-logo-custom';
+            nl.innerHTML = 'CHEESE';
+            l.parentElement.insertBefore(nl, l);
+        }
+        setFavicon();
+    }
+
+    injectCheese();
+    setInterval(injectCheese, 1000); 
+})();
